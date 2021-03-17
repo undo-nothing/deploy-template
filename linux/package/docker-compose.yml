@@ -1,0 +1,77 @@
+version: '3.3'
+
+volumes:
+  redis_data: {}
+
+services:
+
+  redis:
+    build:
+      context: .
+      dockerfile: ./compose/production/redis/Dockerfile
+    image: my-redis
+    restart: unless-stopped
+    container_name: redis
+    command: redis-server /usr/local/etc/redis/my-redis.conf
+    volumes:
+     - ./compose/production/redis:/usr/local/etc/redis
+     - redis_data:/data
+
+  web:
+    build:
+      context: .
+      dockerfile: ./compose/production/web/Dockerfile
+    image: my-web
+    restart: unless-stopped
+    container_name: web
+    depends_on:
+      - redis
+    volumes:
+      - ./web/{{ DjangoProject }}:/app
+      - ./web/media:/app/media
+    environment:
+      - DEBUG=false
+      - SERVICE=web
+
+  worker:
+    image: my-web
+    restart: unless-stopped
+    container_name: worker
+    environment:
+      - SERVICE=worker
+      - DEBUG=false
+      - C_FORCE_ROOT=true
+    volumes:
+      - ./web/{{ DjangoProject }}:/app
+      - ./web/media:/app/media
+    depends_on:
+      - redis
+
+  beat:
+    image: my-web
+    restart: unless-stopped
+    container_name: beat
+    environment:
+      - SERVICE=beat
+      - CLOUD_VERSION=false
+    depends_on:
+      - redis
+    volumes:
+      - ./web/{{ DjangoProject }}:/app
+      - ./web/media:/app/media
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: my-ngnix
+    restart: unless-stopped
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./web/{{ DjangoProject }}:/app
+      - ./web/media:/app/media
+      - ./compose/production/nginx/conf.d:/etc/nginx/conf.d
+
