@@ -1,0 +1,10 @@
+set CURRENTPATH=%~dp0
+set MYSQLPATH=%CURRENTPATH%\mysql57\bin
+
+cd /d %MYSQLPATH%
+
+mysqld --install {{ MYSQL_SERVICE }}
+sc config "{{ MYSQL_SERVICE }}" start=auto
+net start {{ MYSQL_SERVICE }}
+
+cd /d %CURRENTPATH%

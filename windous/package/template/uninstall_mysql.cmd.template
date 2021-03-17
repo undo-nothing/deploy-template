@@ -1,0 +1,6 @@
+set CURRENTPATH=%~dp0
+
+net stop {{ MYSQL_SERVICE }}
+sc delete {{ MYSQL_SERVICE }}
+
+cd /d %CURRENTPATH%

@@ -1,0 +1,11 @@
+set CURRENTPATH=%~dp0
+
+net stop {{ APACHE_PROXY_SERVICE }}
+net stop {{ APACHE_DJANGO_SERVICE }}
+net stop {{ APACHE_VUE_SERVICE }}
+
+sc delete {{ APACHE_PROXY_SERVICE }}
+sc delete {{ APACHE_DJANGO_SERVICE }}
+sc delete {{ APACHE_VUE_SERVICE }}
+
+cd /d %CURRENTPATH%

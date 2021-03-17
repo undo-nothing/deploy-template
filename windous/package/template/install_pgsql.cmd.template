@@ -1,0 +1,11 @@
+set CURRENTPATH=%~dp0
+set PGSQLPATH=%CURRENTPATH%\pgsql
+
+cd /d "%PGSQLPATH%\bin"
+
+"pg_ctl.exe" register -N "{{ PGSQL_SERVICE }}" -D "%PGSQLPATH%\data" -l "%PGSQLPATH%\logfile"
+sc config "{{ PGSQL_SERVICE }}" start=auto
+net start "{{ PGSQL_SERVICE }}"
+
+
+cd /d %CURRENTPATH%

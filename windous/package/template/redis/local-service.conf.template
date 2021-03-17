@@ -1,0 +1,6 @@
+include .\redis.windows-service.conf
+
+logfile "my-redis.log"
+#loglevel
+port {{ REDIS_PORT }}
+appendonly no

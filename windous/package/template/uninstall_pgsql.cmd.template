@@ -1,0 +1,6 @@
+set CURRENTPATH=%~dp0
+
+net stop{{ PGSQL_SERVICE }}
+sc delete{{ PGSQL_SERVICE }}
+
+cd /d %CURRENTPATH%

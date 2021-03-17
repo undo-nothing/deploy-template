@@ -1,0 +1,6 @@
+set CURRENTPATH=%~dp0
+
+net stop {{ REDIS_SERVICE }}
+sc delete {{ REDIS_SERVICE }}
+
+cd /d %CURRENTPATH%

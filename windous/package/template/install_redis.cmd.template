@@ -1,0 +1,10 @@
+set CURRENTPATH=%~dp0
+set REDISPATH=%CURRENTPATH%\redis
+
+cd /d "%REDISPATH%"
+
+redis-server.exe --service-install local-service.conf --service-name {{ REDIS_SERVICE }}
+sc config "{{ REDIS_SERVICE }}" start=auto
+net start "{{ REDIS_SERVICE }}"
+
+cd /d %CURRENTPATH%

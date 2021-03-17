@@ -1,0 +1,22 @@
+set CURRENTPATH=%~dp0
+set APACHE=%CURRENTPATH%\Apache24\bin
+
+cd /d %APACHE%
+
+net stop {{ APACHE_PROXY_SERVICE }}
+net stop {{ APACHE_DJANGO_SERVICE }}
+net stop {{ APACHE_VUE_SERVICE }}
+
+sc delete {{ APACHE_PROXY_SERVICE }}
+sc delete {{ APACHE_DJANGO_SERVICE }}
+sc delete {{ APACHE_VUE_SERVICE }}
+
+httpd -k install -n {{ APACHE_PROXY_SERVICE }} -f conf/httpd-proxy.conf
+httpd -k install -n {{ APACHE_DJANGO_SERVICE }} -f conf/httpd-django.conf
+httpd -k install -n {{ APACHE_VUE_SERVICE }} -f conf/httpd-vue.conf
+
+net start {{ APACHE_PROXY_SERVICE }}
+net start {{ APACHE_DJANGO_SERVICE }}
+net start {{ APACHE_VUE_SERVICE }}
+
+cd /d %CURRENTPATH%
